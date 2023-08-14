@@ -18,8 +18,7 @@ import Link from "next/link";
 
 
 
-const FormSchema = z
-  .object({
+const FormSchema = z.object({
     
     email: z.string().min(1, 'Email is required').email('Invalid email'),
     password: z
@@ -30,32 +29,34 @@ const FormSchema = z
   })
   
 
-export const SignInForm = () => {
+const SignInForm = () => {
     
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
-   
-
-    
-
     const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-        defaultValues: {
-          
-          email: "",
-          password: "",
-          
-        },
-      });
+      resolver: zodResolver(FormSchema),
+      defaultValues: {
+        email: '',
+        password: '',
+      },
+    });   
+
+   
 
     const onSubmit = async (values: z.infer<typeof FormSchema> ) => {
         
-        // Sign in User
-
-        console.log(values);
+       const signInData = await signIn( 'credentials' , {
+          email: values.email,
+          password: values.password,
+          redirect:false,
+        });
               
-
+        if(signInData?.error) {
+          console.log(signInData.error);
+        } else {
+          router.push('/admin')
+        }
 
     }
 
@@ -86,7 +87,9 @@ export const SignInForm = () => {
              
              
             
-            <div className="pb-3">                <FormField
+            <div className="pb-3"> 
+            
+              <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
@@ -157,3 +160,5 @@ export const SignInForm = () => {
    
 
 }
+
+export default SignInForm;

@@ -52,14 +52,23 @@ export const SignUpForm = () => {
         
         // Register User
 
-        console.log(values);
-  
+        const response = await fetch('/api/user', {
+          method: 'POST',
+          headers: {
+            "Content-Type": 'application/json' 
+          },
         
-          
-          
-       
-
-
+          body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          password: values.password
+        })
+      })
+        if(response.ok) {
+          router.push('/sign-in')
+        } else {
+          console.error( 'Registration failed')
+        }
     }
 
     return (
